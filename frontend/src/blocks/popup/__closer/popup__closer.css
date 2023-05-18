@@ -1,0 +1,22 @@
+.popup__closer {
+  height: 32px;
+  width: 32px;
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  background-image: url('../../../images/edit-form-close.svg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent;
+  border: none;
+}
+
+@media screen and (max-width: 568px) {
+  .popup__closer {
+    width: 20px;
+    height: 20px;
+    top: -36px;
+    right: 0;
+  }
+}

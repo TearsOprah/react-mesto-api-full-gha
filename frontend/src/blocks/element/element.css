@@ -1,0 +1,11 @@
+.element {
+  margin: 0;
+  padding: 0;
+  background-size: cover;
+  width: 282px;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  position: relative;
+}

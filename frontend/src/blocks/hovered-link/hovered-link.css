@@ -1,0 +1,5 @@
+.hovered-link:hover {
+  opacity: .6;
+  transition: 1s;
+  cursor: pointer;
+}

@@ -4,6 +4,7 @@ const { errors } = require('celebrate');
 const NotFoundError = require('./errors/NotFound');
 const errorHandler = require('./errors/errorHandler');
 const rootRouter = require('./routes/index');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const { PORT = 3000 } = process.env;
 
@@ -16,7 +17,11 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(requestLogger);
+
 app.use('/', rootRouter);
+
+app.use(errorLogger);
 
 app.use((req, res, next) => next(new NotFoundError('Страница не найдена')));
 
