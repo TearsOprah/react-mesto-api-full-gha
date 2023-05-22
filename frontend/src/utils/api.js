@@ -1,7 +1,10 @@
 class Api {
   constructor(options) {
     this._baseUrl = options.baseUrl;
-    this._headers = options.headers;
+    this._headers = {
+      ...options.headers,
+      authorization: `Bearer ${localStorage.getItem('jwt')}`
+    };
   }
 
   // получили ответ, если все ок - создаем объект иначе пропускаем все then и попадаем в catch
@@ -103,14 +106,10 @@ class Api {
 
 // api
 const api = new Api({
-  baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-59',
+  baseUrl: 'https://api.mesto.tearsoprah.nomoredomains.monster',
   headers: {
-    authorization: '9d89c91e-8283-405d-99c3-5ef7c632611e',
     'Content-Type': 'application/json'
   }
 });
-
-//Токен: 9d89c91e-8283-405d-99c3-5ef7c632611e
-//Идентификатор группы: cohort-59"
 
 export default api
