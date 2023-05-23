@@ -5,6 +5,7 @@ import AlertPopup from "./AlertPopup";
 export default function Register(props) {
 
   const navigate = useNavigate();
+  console.log(props)
 
   // закрываем попап
   const handleCloseAlertPopup = () => {

@@ -19,7 +19,6 @@ function App() {
 
   const [cards, setCards] = useState([])
 
-
   function handleCardDelete(card) {
     const cardId = card._id;
     api.deleteCard(cardId)
@@ -31,15 +30,14 @@ function App() {
       })
   }
 
-  function handleCardLike(card) {
-    // Снова проверяем, есть ли уже лайк на этой карточке
-    const isLiked = card.likes.some(i => i._id === currentUser._id);
 
+  function handleCardLike(card) {
+    const isLiked = card.likes.some(i => i._id === currentUser.user._id);
     // Отправляем запрос в API и получаем обновлённые данные карточки
     api.toggleLike(card._id, isLiked)
       .then((newCard) => {
         setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
-    })
+      })
       .catch(err => {
         console.log(err)
       });
@@ -72,7 +70,7 @@ function App() {
     setSelectedCard(card)
     setIsImagePopupOpen(true)
   }
-  
+
   function closeAllPopups() {
     setIsEditProfilePopupOpen(false)
     setIsAddPlacePopupOpen(false)
@@ -87,12 +85,16 @@ function App() {
   useEffect(() => {
     api.getInitialCards()
       .then(res => {
-        setCards(res)
+        if (Array.isArray(res.data)) {
+          setCards(res.data);
+        } else {
+          console.log('Response data is not an array:', res.data);
+        }
       })
       .catch(err => {
-        console.log(err)
-      })
-  }, [])
+        console.log(err);
+      });
+  }, []);
 
 
   const [isLoading, setIsLoading] = useState(false);
@@ -128,8 +130,10 @@ function App() {
   }
 
   function handleAddPlaceSubmit(data) {
-    setIsLoading(true)
-    api.addNewCard(data)
+    setIsLoading(true);
+    const newData = { ...data, owner: currentUser.user._id };
+    console.log(newData)
+    api.addNewCard(newData)
       .then(newCard => {
         setCards((cards) => [newCard, ...cards]);
         closeAllPopups();
@@ -138,9 +142,10 @@ function App() {
         console.log(err);
       })
       .finally(() => {
-        setIsLoading(false)
-      })
+        setIsLoading(false);
+      });
   }
+
 
   const [selectedCard, setSelectedCard] = useState({})
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false)
@@ -198,14 +203,14 @@ function App() {
       // установим loggedIn значение true
       auth.checkToken(jwt)
         .then((res) => {
-        if (res){
-          const data = res;
-          setLoggedIn(true);
-          setUserData(data); // добавляем data в state
-          // перенаправим пользователя в /
-          navigate("/", {replace: true})
-        }
-      })
+          if (res){
+            const data = res;
+            setLoggedIn(true);
+            setUserData(data); // добавляем data в state
+            // перенаправим пользователя в /
+            navigate("/", {replace: true})
+          }
+        })
         .catch((err) => {
           console.log(err)
         });
@@ -241,7 +246,7 @@ function App() {
       .then((res) => {
 
         // если пришел ответ с data -> регистрация успешная
-        if (res.data) {
+        if (res.email) {
           setIsRegistrationSuccessful(true)
           setIsAlertPopupOpen(true)
         }

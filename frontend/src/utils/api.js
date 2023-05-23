@@ -1,6 +1,10 @@
 class Api {
-  constructor() {
-    this._baseUrl = 'https://api.mesto.tearsoprah.nomoredomains.monster';
+  constructor(options) {
+    this._baseUrl = options.baseUrl;
+    this._headers = {
+      ...options.headers,
+      authorization: `Bearer ${localStorage.getItem('jwt')}`
+    };
   }
 
   // получили ответ, если все ок - создаем объект иначе пропускаем все then и попадаем в catch
@@ -14,10 +18,7 @@ class Api {
   // Загрузка информации о пользователе с сервера
   getUserData() {
     return fetch(`${this._baseUrl}/users/me`, {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
-        'Content-type': 'application/json'
-      }
+      headers: this._headers
     })
       .then(res => this._getResponseData(res))
       .then((data) => {
@@ -27,10 +28,7 @@ class Api {
 
   getInitialCards() {
     return fetch(`${this._baseUrl}/cards`, {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
-        'Content-type': 'application/json'
-      }
+      headers: this._headers
     })
       .then(res => this._getResponseData(res))
       .then((data) => {
@@ -41,10 +39,7 @@ class Api {
   setUserData({name, about}) {
     return fetch(`${this._baseUrl}/users/me`, {
       method: 'PATCH',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
-        'Content-type': 'application/json'
-      },
+      headers: this._headers,
       body: JSON.stringify({
         name,
         about
@@ -56,10 +51,7 @@ class Api {
   addNewCard({name, link}) {
     return fetch(`${this._baseUrl}/cards`, {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
-        'Content-type': 'application/json'
-      },
+      headers: this._headers,
       body: JSON.stringify({
         name,
         link
@@ -71,10 +63,7 @@ class Api {
   deleteCard(cardId) {
     return fetch(`${this._baseUrl}/cards/${cardId}`, {
       method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
-        'Content-type': 'application/json'
-      },
+      headers: this._headers
     })
       .then(res => this._getResponseData(res))
   }
@@ -82,10 +71,7 @@ class Api {
   setLike(cardId) {
     return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
-        'Content-type': 'application/json'
-      },
+      headers: this._headers
     })
       .then(res => this._getResponseData(res))
   }
@@ -93,10 +79,7 @@ class Api {
   deleteLike(cardId) {
     return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
-        'Content-type': 'application/json'
-      },
+      headers: this._headers
     })
       .then(res => this._getResponseData(res))
   }
@@ -112,10 +95,7 @@ class Api {
   updateAvatar({ avatar }) {
     return fetch(`${this._baseUrl}/users/me/avatar`, {
       method: 'PATCH',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
-        'Content-type': 'application/json'
-      },
+      headers: this._headers,
       body: JSON.stringify({
         avatar
       })
@@ -125,6 +105,11 @@ class Api {
 }
 
 // api
-const api = new Api();
+const api = new Api({
+  baseUrl: 'https://api.mesto.tearsoprah.nomoredomains.monster',
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
 
 export default api

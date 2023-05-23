@@ -4,7 +4,11 @@ import React from "react";
 
 export default function Main(props) {
 
-  const currentUser = React.useContext(CurrentUserContext)
+  const currentUser = React.useContext(CurrentUserContext).user
+
+  if (!currentUser) {
+    return null;
+  }
 
   return (
     <main className="content">
@@ -24,12 +28,13 @@ export default function Main(props) {
       </section>
       <section className="elements">
         <ul className="elements__list">
-          {props.cards.map(card => (
-            <Card card={card}
-                  key={card._id}
-                  onCardClick={props.onCardClick}
-                  onCardLike={props.onCardLike}
-                  onCardDelete={props.onCardDelete}
+          {props.cards && props.cards.map(card => (
+            <Card
+              card={card}
+              key={card._id}
+              onCardClick={props.onCardClick}
+              onCardLike={props.onCardLike}
+              onCardDelete={props.onCardDelete}
             />
           ))}
         </ul>
