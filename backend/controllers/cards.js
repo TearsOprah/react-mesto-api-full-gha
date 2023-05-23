@@ -57,18 +57,23 @@ function likeCard(req, res, next) {
   const { cardId } = req.params;
   const { userId } = req.user;
 
-  Card.findByIdAndUpdate(
-    cardId,
-    { $addToSet: { likes: userId } },
-    { new: true }
-  )
-    .populate('likes')
-    .populate('owner') // Добавляем эту строку, чтобы загрузить полные данные владельца карточки
+  Card
+    .findByIdAndUpdate(
+      cardId,
+      {
+        $addToSet: {
+          likes: userId,
+        },
+      },
+      {
+        new: true,
+      },
+    )
+    .populate(['owner', 'likes'])
     .then((card) => {
-      if (card) {
-        return res.send(card);
-      }
-      throw new NotFoundError('Передан несуществующий _id карточки');
+      if (card) return res.send(card);
+
+      throw new NotFoundError('Карточка с указанным id не найдена');
     })
     .catch(next);
 }
@@ -77,18 +82,23 @@ function dislikeCard(req, res, next) {
   const { cardId } = req.params;
   const { userId } = req.user;
 
-  Card.findOneAndUpdate(
-    { _id: cardId, likes: userId }, // Условие: id карточки и пользователь присутствуют в массиве likes
-    { $pull: { likes: userId } },
-    { new: true }
-  )
-    .populate('likes')
-    .populate('owner')
+  Card
+    .findByIdAndUpdate(
+      cardId,
+      {
+        $pull: {
+          likes: userId,
+        },
+      },
+      {
+        new: true,
+      },
+    )
+    .populate(['owner', 'likes'])
     .then((card) => {
-      if (card) {
-        return res.send(card);
-      }
-      throw new NotFoundError('Передан несуществующий _id карточки или лайк отсутствует');
+      if (card) return res.send(card);
+
+      throw new NotFoundError('Данные по указанному id не найдены');
     })
     .catch(next);
 }
