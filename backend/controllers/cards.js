@@ -22,7 +22,7 @@ function createCard(req, res, next) {
 
   Card.create({ name, link, owner: userId })
     .then((card) => {
-      res.status(STATUS_CREATED).send({ data: card });
+      res.status(STATUS_CREATED).send(card);
     })
     .catch(next);
 }
