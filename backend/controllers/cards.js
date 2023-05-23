@@ -77,18 +77,18 @@ function dislikeCard(req, res, next) {
   const { cardId } = req.params;
   const { userId } = req.user;
 
-  Card.findByIdAndUpdate(
-    cardId,
+  Card.findOneAndUpdate(
+    { _id: cardId, likes: userId }, // Условие: id карточки и пользователь присутствуют в массиве likes
     { $pull: { likes: userId } },
     { new: true }
   )
     .populate('likes')
-    .populate('owner') // Добавляем эту строку, чтобы загрузить полные данные владельца карточки
+    .populate('owner')
     .then((card) => {
       if (card) {
         return res.send(card);
       }
-      throw new NotFoundError('Передан несуществующий _id карточки');
+      throw new NotFoundError('Передан несуществующий _id карточки или лайк отсутствует');
     })
     .catch(next);
 }
