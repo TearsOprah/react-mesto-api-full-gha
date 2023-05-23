@@ -59,38 +59,38 @@ function likeCard(req, res, next) {
 
   Card.findByIdAndUpdate(
     cardId,
-    { $addToSet: { likes: userId } }, // добавить _id в массив, если его там нет
+    { $addToSet: { likes: userId } },
     { new: true },
   )
-    .populate('likes') // добавляем популяцию для получения полных данных о лайках
+    .populate('likes')
     .then((card) => {
       if (card) {
-        return res.json(card); // возвращаем карточку без обертки в { data: ... }
+        return res.send({ likes: card.likes, ...card.toObject() });
       }
       throw new NotFoundError('Передан несуществующий _id карточки');
     })
     .catch(next);
 }
 
-// удаление лайка
 function dislikeCard(req, res, next) {
   const { cardId } = req.params;
   const { userId } = req.user;
 
   Card.findByIdAndUpdate(
     cardId,
-    { $pull: { likes: userId } }, // убрать _id из массива
+    { $pull: { likes: userId } },
     { new: true },
   )
-    .populate('likes') // добавляем популяцию для получения полных данных о лайках
+    .populate('likes')
     .then((card) => {
       if (card) {
-        return res.json(card); // возвращаем карточку без обертки в { data: ... }
+        return res.send({ likes: card.likes, ...card.toObject() });
       }
       throw new NotFoundError('Передан несуществующий _id карточки');
     })
     .catch(next);
 }
+
 
 module.exports = {
   getAllCards, createCard, deleteCard, likeCard, dislikeCard,
