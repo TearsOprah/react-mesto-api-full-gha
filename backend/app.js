@@ -6,20 +6,22 @@ const errorHandler = require('./errors/errorHandler');
 const rootRouter = require('./routes/index');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const cors = require('cors');
+const helmet = require('helmet');
 
 const { PORT = 3000 } = process.env;
+
+const app = express();
+
+// использование модуля cors
+app.use(cors());
+app.use(helmet());
 
 // подключение к базе данных
 mongoose.set('strictQuery', true);
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
-const app = express();
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// использование модуля cors
-app.use(cors());
 
 app.use(requestLogger);
 
