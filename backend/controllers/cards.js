@@ -62,9 +62,10 @@ function likeCard(req, res, next) {
     { $addToSet: { likes: userId } }, // добавить _id в массив, если его там нет
     { new: true },
   )
+    .populate('likes') // добавляем популяцию для получения полных данных о лайках
     .then((card) => {
       if (card) {
-        return res.send({ data: card });
+        return res.json(card); // возвращаем карточку без обертки в { data: ... }
       }
       throw new NotFoundError('Передан несуществующий _id карточки');
     })
@@ -81,9 +82,10 @@ function dislikeCard(req, res, next) {
     { $pull: { likes: userId } }, // убрать _id из массива
     { new: true },
   )
+    .populate('likes') // добавляем популяцию для получения полных данных о лайках
     .then((card) => {
       if (card) {
-        return res.send({ data: card });
+        return res.json(card); // возвращаем карточку без обертки в { data: ... }
       }
       throw new NotFoundError('Передан несуществующий _id карточки');
     })
