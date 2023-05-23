@@ -60,12 +60,13 @@ function likeCard(req, res, next) {
   Card.findByIdAndUpdate(
     cardId,
     { $addToSet: { likes: userId } },
-    { new: true },
+    { new: true }
   )
     .populate('likes')
+    .populate('owner') // Добавляем эту строку, чтобы загрузить полные данные владельца карточки
     .then((card) => {
       if (card) {
-        return res.send({ likes: card.likes, ...card.toObject() });
+        return res.send(card);
       }
       throw new NotFoundError('Передан несуществующий _id карточки');
     })
@@ -79,12 +80,13 @@ function dislikeCard(req, res, next) {
   Card.findByIdAndUpdate(
     cardId,
     { $pull: { likes: userId } },
-    { new: true },
+    { new: true }
   )
     .populate('likes')
+    .populate('owner') // Добавляем эту строку, чтобы загрузить полные данные владельца карточки
     .then((card) => {
       if (card) {
-        return res.send({ likes: card.likes, ...card.toObject() });
+        return res.send(card);
       }
       throw new NotFoundError('Передан несуществующий _id карточки');
     })
