@@ -82,19 +82,18 @@ function updateUserAvatar(req, res, next) {
   updateUser(req, res, next, { avatar });
 }
 
-let secretKey;
-
-if (process.env.NODE_ENV !== 'production') {
-  // В режиме разработки, когда файл .env отсутствует
-  secretKey = 'development_secret_key';
-} else {
-  // В режиме production, когда используются значения из файла .env
-  require('dotenv').config();
-  secretKey = process.env.JWT_SECRET;
-}
-
 function login(req, res, next) {
   const { email, password } = req.body;
+  let secretKey;
+
+  if (process.env.NODE_ENV !== 'production') {
+    // В режиме разработки, когда файл .env отсутствует
+    secretKey = 'development_secret_key';
+  } else {
+    // В режиме production, когда используются значения из файла .env
+    require('dotenv').config();
+    secretKey = process.env.JWT_SECRET;
+  }
 
   User.findUserByCredentials(email, password)
     .then(({ _id: userId }) => {
